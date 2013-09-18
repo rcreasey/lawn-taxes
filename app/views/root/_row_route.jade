@@ -1,0 +1,13 @@
+tr
+  td
+    strong  
+      = route.startStation.stationName.split(' ',1)
+      | 
+      span.glyphicon.glyphicon-resize-horizontal 
+      | 
+      = route.endStation.stationName.split(' ',1)
+
+  td.rates 
+    = accounting.formatNumber(route.rate, 0)
+    | isk @ m
+    sup 3

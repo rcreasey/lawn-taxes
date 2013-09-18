@@ -1,0 +1,15 @@
+table#users.table.table-hover
+  thead
+    tr
+      th Username
+      th.actions Action
+
+  tbody
+    each u in users
+      tr
+        td= u.username
+        td.actions
+          form(method="post", action="/users/#{u.id}")
+            input(type="hidden", name="id", value=u.id)
+            input(type="hidden", name="_method", value="DELETE")
+            input.btn.btn-danger.btn-xs(value="Delete", type="submit")
