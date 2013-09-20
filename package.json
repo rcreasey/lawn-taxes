@@ -25,8 +25,8 @@
     "express": "3.x.x",
     "grunt": "0.4.x",
     "grunt-contrib-jshint": "0.6.x",
-    "grunt-contrib-nodeunit": "0.2.x",
-    "grunt-contrib-uglify": "0.2.x",
+    "grunt-contrib-clean": "0.5.x",
+    "grunt-contrib-internal": "0.4.x",
     "jade": "0.30.x",
     "less-middleware": "0.1.x",
     "locomotive": "0.3.x",
@@ -39,6 +39,7 @@
     "passport": "0.1.x",
     "passport-local": "0.1.x",
     "passport-local-mongoose": "0.2.x",
-    "underscore": "1.5.x"
+    "underscore": "1.5.x",
+    "xml2js": "0.2.8"
   }
 }
