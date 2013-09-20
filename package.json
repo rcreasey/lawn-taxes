@@ -24,6 +24,7 @@
     "connect-powered-by": "0.1.x",
     "express": "3.x.x",
     "grunt": "0.4.x",
+    "grunt-cli": "0.1.x",
     "grunt-contrib-jshint": "0.6.x",
     "grunt-contrib-clean": "0.5.x",
     "grunt-contrib-internal": "0.4.x",
