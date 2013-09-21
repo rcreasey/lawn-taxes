@@ -51,7 +51,7 @@ module.exports = function(grunt) {
               async.forEach(type.history, function(item, callback) {
                 var date  = moment(item.$.date)._d
                 var datum = {invType: typeID._id, regionID: parseInt(regionID), 
-                             date: date, movement: parseInt(item.$.movement), count: parseInt(item.$.numOrders),
+                             date: date, movement: parseInt(item.$.movement), volume: parseInt(item.$.numOrders),
                              min: parseFloat(item.$.minPrice), max: parseFloat(item.$.maxPrice), average: parseFloat(item.$.avgPrice)};
 
                 MarketDatum.update({invType: typeID._id, regionID: regionID, date: date}, {$set: datum}, {upsert: true}, callback);

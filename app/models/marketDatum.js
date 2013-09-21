@@ -3,14 +3,14 @@ var mongoose = require('mongoose')
   , InvType = require('./invType')
 
 var MarketDatum = Schema({
-  invType: {type: Schema.Types.ObjectId, index: true, ref: 'invType'},
+  invType: {type: Schema.Types.ObjectId, index: true, ref: 'InvType'},
   regionID: {type: Number, index: true},
   date: Date,
   min: Number,
   max: Number,
   average: Number,
   movement: Number,
-  count: Number
+  volume: Number
 });
 
 module.exports = mongoose.model('MarketDatum', MarketDatum, 'marketdata');

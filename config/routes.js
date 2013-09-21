@@ -1,6 +1,6 @@
 var passport = require('passport')  
   , login = require('connect-ensure-login')
-  , root = require('../app/controllers/root_controller')
+  , market = require('../app/controllers/market_controller')
   , users = require('../app/controllers/users_controller')
 
 module.exports = function routes() {
@@ -12,5 +12,8 @@ module.exports = function routes() {
   this.post('register', login.ensureLoggedOut('/logout'), users.create);
   this.get('logout', users.logout);
 
-  this.root(root.index);
+  this.get('/market/?', market.index)
+  this.get('/market/:typeID', market.show)
+
+  this.root(market.index);
 };
