@@ -58,8 +58,8 @@ module.exports = function() {
   this.use(express.bodyParser());
   this.use(express.methodOverride());
 
-  this.use(express.session({ secret: 'lawn t@x3s', 
-                             cookie: { path: '/', httpOnly: true, maxAge: 86400},
+  this.use(express.session({ secret: 'lawn t@x3s', maxAge: moment().add('week', 1)._d, expires: moment().add('week', 1)._d,
+                             cookie: { path: '/', httpOnly: true, maxAge: moment().add('week', 1)._d, _expires: moment().add('week', 1)._d},
                              store: new mongo_store(process.env.MONGO_URL) }));
   this.use(passport.initialize());
   this.use(passport.session());
