@@ -26,7 +26,7 @@ MarketController.show = function(req, res) {
       })
     }
   ], function (err, invtype, datums) {
-    res.render('market/show', { title: 'Market', user: req.user, invtype: invtype, datums: datums });
+    res.render('market/show', { title: 'Market Details', user: req.user, invtype: invtype, datums: datums });
   });
 };
 
