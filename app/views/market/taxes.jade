@@ -23,11 +23,11 @@ block content
         dt= accounting.toFixed(taxes.price, 2)
         dd Average Price
 
-        dt= accounting.formatNumber( taxes.quantity * taxes.price )
+        dt.subtotal= accounting.formatNumber( taxes.quantity * taxes.price )
         dd Pre-tax Total
 
         dt #{parseInt(taxes.rate * 100)} %
         dd Tax Rate
 
-        dt= accounting.formatNumber( taxes.quantity * taxes.price * taxes.rate )
+        dt.subtotal= accounting.formatNumber( taxes.quantity * taxes.price * taxes.rate )
         dd Total Due
