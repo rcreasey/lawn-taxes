@@ -1,4 +1,5 @@
 var async = require('async')
+  , moment = require('moment')
   , locomotive = require('locomotive')
   , Controller = locomotive.Controller
   , MarketController = new Controller()
@@ -15,6 +16,30 @@ MarketController.show = function(req, res) {
   var typeID = req.param('typeID') || false;
   if (!typeID) res.redirect('/')
 
+  async.waterfall([
+    function(callback){
+      InvType.findOne({typeID: typeID}, callback);
+    },
+    function(invType, callback){
+      if (invType === null) {
+        res.redirect('/')        
+      } else {
+        MarketDatum.find({invType: invType._id}).populate('invType').sort('-date').exec(function(err, datums) {
+          callback(err, invType, datums);
+        })        
+      }
+    }
+  ], function (err, invtype, datums) {
+    res.render('market/show', { title: 'Market :: Details', user: req.user, invtype: invtype, datums: datums });
+  });
+};
+
+MarketController.taxes = function(req, res) {
+  var typeID = req.param('typeID') || false;
+  if (!typeID) res.redirect('/')
+
+  var start = moment(req.body.start, 'MM-DD-YYYY')
+  var end   = moment(req.body.end, 'MM-DD-YYYY')
 
   async.waterfall([
     function(callback){
@@ -23,24 +48,34 @@ MarketController.show = function(req, res) {
     function(invType, callback){
       MarketDatum.find({invType: invType._id}).populate('invType').sort('-date').exec(function(err, datums) {
         callback(err, invType, datums);
-      })
+      });
+    },
+    function(invType, datums, callback){
+      MarketDatum.aggregate(
+          { $match: { invType: invType._id, date: {$gte: start._d, $lte: end._d} }}
+        , { $project: { 
+                _id: {
+                    year : { $year : "$date" }
+                  , month : { $month : "$date" }
+                  , day : { $dayOfMonth : "$date" }
+                }
+              , invType: 1
+              , min: 1
+              , max: 1
+              , average: 1
+          }}
+        , { $group: { _id: '$invType', value: {$avg: "$average"} }}
+        , function(err, results) {
+          if (err) throw err;
+          callback(err, invType, datums, results[0].value);
+        }
+      );
     }
-  ], function (err, invtype, datums) {
-    res.render('market/show', { title: 'Market Details', user: req.user, invtype: invtype, datums: datums });
+  ], function (err, invtype, datums, price) {
+    var taxes = {price: price, quantity: req.body.quantity, rate: req.body.rate, start: start, end: end};
+    res.render('market/taxes', { title: 'Market :: Taxes', user: req.user, invtype: invtype, datums: datums, taxes: taxes });
   });
+
 };
-
-
-// {
-//   "_id": { "$oid" : "523c918091f90faf89d56a9b" },
-//   "average": 5094.3299999999999272,
-//   "count": 76,
-//   "date": { "$date": 1379228400000.000000 },
-//   "invType": { "$oid" : "5211f43feaa0d47675c7b61b" },
-//   "max": 5094.5200000000004366,
-//   "min": 4923.1599999999998545,
-//   "movement": 2189038,
-//   "regionID": 10000002
-// }
 
 module.exports = MarketController;

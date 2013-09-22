@@ -9,30 +9,13 @@ block content
 
   .row
     .col-md-7
-      table#market-data.table.table-striped.table-condensed
-        thead
-          tr
-            th Date
-            th Min
-            th Max
-            th Average
-            th Volume
-            th Movement
-        tbody
-          each datum in datums
-            tr
-              td= moment(String(datum.date)).format("YYYY-MM-DD")
-              td= accounting.formatNumber(datum.min)
-              td= accounting.formatNumber(datum.max)
-              td= accounting.formatNumber(datum.average)
-              td= accounting.formatNumber(datum.volume)
-              td= accounting.formatNumber(datum.movement)
+      include _table
 
     #tax-form.col-md-5
       h3 Calculate Taxes
-      form.form
+      form.form(method='POST', action='/market/#{invtype.typeID}/taxes')
         .form-group
-          select#rate.form-control
+          select#rate.form-control(name='rate')
             option(value='0.90') R64 (90%)
             option(value='0.90') R32 (90%)
             option(value='0.80') R16 (80%)
@@ -40,17 +23,19 @@ block content
             option(value='0.00') R4 (0%)
 
         .form-group
-          input#quantity.form-control(type='text', placeholder='Material Quantity')
+          input#quantity.form-control(name='quantity', type='text', placeholder='Material Quantity')
 
         .form-group
+          label(for='start') Start Date
           .input-group
-            input#start.form-control(type='text', placeholder='Start Date', data-date-format='mm-dd-yyyy')
+            input#start.form-control(name='start', type='text', placeholder='Start Date', data-date-format='mm-dd-yyyy', value=moment().subtract('month', 1).format("MM-DD-YYYY"))
             span.input-group-addon
               span.glyphicon.glyphicon-calendar
 
         .form-group
+          label(for='end') End Date
           .input-group
-            input#end.form-control(type='text', placeholder='End Date', data-date-format='mm-dd-yyyy')
+            input#end.form-control(name='end', type='text', placeholder='End Date', data-date-format='mm-dd-yyyy', value=moment().format("MM-DD-YYYY"))
             span.input-group-addon
               span.glyphicon.glyphicon-calendar
 

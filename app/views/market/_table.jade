@@ -1,0 +1,15 @@
+table#market-data.table.table-striped.table-condensed
+  thead
+    tr
+      th Date
+      th Min
+      th Max
+      th Average
+
+  tbody
+    each datum in datums
+      tr
+        td= moment(String(datum.date)).format("MM-DD-YYYY")
+        td= accounting.toFixed(datum.min, 2)
+        td= accounting.toFixed(datum.max, 2)
+        td= accounting.toFixed(datum.average, 2)
