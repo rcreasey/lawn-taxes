@@ -44,15 +44,20 @@ block content
 
         .form-group
           .input-group
-            input#start.form-control(type='text', placeholder='Start Date', data-date-format='dd-mm-yyyy')
+            input#start.form-control(type='text', placeholder='Start Date', data-date-format='mm-dd-yyyy')
             span.input-group-addon
               span.glyphicon.glyphicon-calendar
 
         .form-group
           .input-group
-            input#end.form-control(type='text', placeholder='End Date', data-date-format='dd-mm-yyyy')
+            input#end.form-control(type='text', placeholder='End Date', data-date-format='mm-dd-yyyy')
             span.input-group-addon
               span.glyphicon.glyphicon-calendar
 
         .form-group
           button.btn.btn-primary(type='submit') Calculate
+
+      :coffeescript
+        $(document).ready ->
+          $('#start').datepicker();
+          $('#end').datepicker();
