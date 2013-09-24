@@ -8,21 +8,21 @@ block content
       h4 Market Details
 
   .row
-    .col-md-7
-      include _table
-
-    #tax-form.col-md-5
+    #tax-form.col-md-5.well
       h3 Calculate Taxes
       form.form(method='POST', action='/market/#{invtype.typeID}/taxes')
         .form-group
           label(for='rate') Tax Rate
           .input-group
             if invtype.rarity < 16
-              input.form-control(name='rate', type='text', value='0', disabled)
+              input.form-control(type='text', value='0', disabled)
+              input(name='rate', type='hidden', value='0.00')
             else if invtype.rarity == 16
-              input.form-control(name='rate', type='text', value='80', disabled)
+              input.form-control(type='text', value='80', disabled)
+              input(name='rate', type='hidden', value='0.80')
             else
-              input.form-control(name='rate', type='text', value='90', disabled)
+              input.form-control(type='text', value='90', disabled)
+              input(name='rate', type='hidden', value='0.90')
             span.input-group-addon %
 
         .form-group
@@ -50,3 +50,6 @@ block content
         $(document).ready ->
           $('#start').datepicker();
           $('#end').datepicker();
+
+    .col-md-7
+      include _table

@@ -5,29 +5,31 @@ block content
     img.pull-left.media-object(src="http://image.eveonline.com/Type/#{invtype.typeID}_64.png")
     .media-body
       h1= invtype.typeName
-      h4 Market Details
 
   .row
-    .col-md-7
-      include _table
 
-    #taxes.col-md-5
-      h3  #{invtype.typeName} Taxes 
+
+    #taxes.col-md-5.well
+      h3 Projected Taxes 
       h4 Period: #{moment(taxes.start).format('MM/DD')} to #{moment(taxes.end).format('MM/DD')}
 
       dl.dl-horizontal
 
-        dt= accounting.formatNumber(taxes.quantity)
-        dd Units
+        dt Units
+        dd= accounting.formatNumber(taxes.quantity)
 
-        dt= accounting.toFixed(taxes.price, 2)
-        dd Average Price
+        dt Average Price
+        dd x #{accounting.toFixed(taxes.price, 2)}
 
-        dt.subtotal= accounting.formatNumber( taxes.quantity * taxes.price )
-        dd Pre-tax Total
+        dt Pre-tax Total
+        dd.subtotal= accounting.formatNumber( taxes.quantity * taxes.price )
 
-        dt #{taxes.rate} %
-        dd Tax Rate
+        dt Tax Rate
+        dd x #{parseInt(taxes.rate * 100)} %
 
-        dt.subtotal= accounting.formatNumber( taxes.quantity * taxes.price * (taxes.rate / 100) )
-        dd Total Due
+        dt Total Due
+        dd.subtotal
+          strong= accounting.formatNumber( taxes.quantity * taxes.price * taxes.rate )
+
+    .col-md-7
+      include _table
