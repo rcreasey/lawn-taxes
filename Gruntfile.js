@@ -8,11 +8,8 @@ module.exports = function(grunt) {
        , 'tasks/**/*.js'
       ]
     },
-    clean: {
-      tests: ['tmp']
-    }
   });
 
   grunt.loadTasks('tasks');
-  grunt.registerTask('default', ['update']);
+  grunt.registerTask('default', ['update', 'cleanup']);
 };

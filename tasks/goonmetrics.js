@@ -14,13 +14,14 @@ var InvType = require(root + '/app/models/invType')
 
 'use strict';
 
-mongoose.connect(process.env.MONGO_URL);
-var db = mongoose.connection;
-
-var count = 0;
-
 module.exports = function(grunt) {
   grunt.registerTask('update', 'Updates market prices from Goonmetrics.', function() {
+
+    mongoose.connect(process.env.MONGO_URL);
+    var db = mongoose.connection;
+
+    var count = 0;
+
     grunt.log.write('-----> Fetching market prices\n');
 
     var callback = this.async();
@@ -80,6 +81,40 @@ module.exports = function(grunt) {
       callback();
     });
 
+
+    return true;
+  });
+
+  grunt.registerTask('cleanup', 'Removes market data older than 90 days.', function() {
+    mongoose.connect(process.env.MONGO_URL);
+    var db = mongoose.connection;
+    var count = 0;
+    var callback = this.async();
+
+    grunt.log.write('-----> Cleaning up market data\n');
+
+    async.waterfall([
+      function(callback) {
+        MarketDatum.find({date: {$lt: moment().subtract('day', 90)._d}}).exec(function(err, results) {
+          callback(null, results);
+        })
+      }, function(results, callback) {
+        async.forEach(results, function(result, callback) {
+          result.remove(function(err) {
+            if (err) throw err;
+            count += 1;
+            grunt.log.write('.');
+            callback();
+          })
+        })
+        callback();
+      }
+    ], function() {
+      grunt.log.write('\n       %s Market Datums Removed: ', count);
+      mongoose.disconnect();
+      grunt.log.ok();
+      callback();
+    });
 
     return true;
   });
