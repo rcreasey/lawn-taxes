@@ -26,8 +26,8 @@ block content
         dt.subtotal= accounting.formatNumber( taxes.quantity * taxes.price )
         dd Pre-tax Total
 
-        dt #{parseInt(taxes.rate * 100)} %
+        dt #{taxes.rate} %
         dd Tax Rate
 
-        dt.subtotal= accounting.formatNumber( taxes.quantity * taxes.price * taxes.rate )
+        dt.subtotal= accounting.formatNumber( taxes.quantity * taxes.price * (taxes.rate / 100) )
         dd Total Due

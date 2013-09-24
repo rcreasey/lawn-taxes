@@ -7,7 +7,7 @@ var async = require('async')
   , MarketDatum = require('../models/marketDatum')
 
 MarketController.index = function(req, res) {
-  InvType.find({}).sort('typeName').exec(function(err, items) {
+  InvType.find({}).sort('basePrice typeName').exec(function(err, items) {
     res.render('market/index', { title: 'Market', user: req.user, items: items });
   });
 };

@@ -15,12 +15,15 @@ block content
       h3 Calculate Taxes
       form.form(method='POST', action='/market/#{invtype.typeID}/taxes')
         .form-group
-          select#rate.form-control(name='rate')
-            option(value='0.90') R64 (90%)
-            option(value='0.90') R32 (90%)
-            option(value='0.80') R16 (80%)
-            option(value='0.00') R8 (0%)
-            option(value='0.00') R4 (0%)
+          label(for='rate') Tax Rate
+          .input-group
+            if invtype.rarity < 16
+              input.form-control(name='rate', type='text', value='0', disabled)
+            else if invtype.rarity == 16
+              input.form-control(name='rate', type='text', value='80', disabled)
+            else
+              input.form-control(name='rate', type='text', value='90', disabled)
+            span.input-group-addon %
 
         .form-group
           label(for='quantity') Material Quantity

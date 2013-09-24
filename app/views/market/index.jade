@@ -3,7 +3,8 @@ extends ../layout/default
 block content
   .row
     .col-md-8.col-md-offset-2
-      
+
+      h3 Materials
       table.table.table-striped.table-condensed
         tbody
           each item in items
@@ -14,4 +15,3 @@ block content
                   .media-body
                     h5
                       a(href='/market/#{item.typeID}')= item.typeName
-

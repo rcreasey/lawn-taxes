@@ -8,7 +8,9 @@ var InvType = Schema({
   marketGroupID: {type: Number, index: true},
   typeName: String,
   description: String,
-  volume: Number
+  basePrice: Number,
+  volume: Number,
+  mass: Number
 });
 
 InvType.methods.market_data = function( callback ) {
@@ -17,5 +19,15 @@ InvType.methods.market_data = function( callback ) {
     return market_datums;
   });
 }
+
+InvType.virtual('rarity').get(function() {
+  switch(this.basePrice) {
+    case 8: return 8; break;
+    case 16: return 16; break;
+    case 64: return 32; break;
+    case 256: return 64; break; 
+    default: return 4; break;
+  }
+});
 
 module.exports = mongoose.model('InvType', InvType, 'invTypes');
