@@ -1,5 +1,6 @@
 var async = require('async')
   , moment = require('moment')
+  , twix = require('twix')
   , locomotive = require('locomotive')
   , Controller = locomotive.Controller
   , MarketController = new Controller()
@@ -40,6 +41,7 @@ MarketController.taxes = function(req, res) {
 
   var start = moment(req.body.start, 'MM-DD-YYYY')
   var end   = moment(req.body.end, 'MM-DD-YYYY')
+  var range = start.twix(end)
 
   async.waterfall([
     function(callback){
@@ -72,7 +74,10 @@ MarketController.taxes = function(req, res) {
       );
     }
   ], function (err, invtype, datums, price) {
-    var taxes = {price: price, quantity: req.body.quantity, rate: req.body.rate, start: start, end: end};
+    var per_day = 2400;
+    var quantity = per_day * range.count('days')
+
+    var taxes = {price: price, per_day: per_day, quantity: quantity, rate: req.body.rate, start: start, end: end, range: range};
     res.render('market/taxes', { title: 'Market :: Taxes', user: req.user, invtype: invtype, datums: datums, taxes: taxes });
   });
 

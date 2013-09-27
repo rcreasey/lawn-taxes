@@ -8,10 +8,9 @@ block content
 
   .row
 
-
     #taxes.col-md-5.well
       h3 Projected Taxes 
-      h4 Period: #{moment(taxes.start).format('MM/DD')} to #{moment(taxes.end).format('MM/DD')}
+      h4 Period: #{moment(taxes.start).format('MM/DD')} to #{moment(taxes.end).format('MM/DD')} (#{taxes.range.count('days')} days) 
 
       dl.dl-horizontal
 

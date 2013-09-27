@@ -32,6 +32,7 @@ module.exports = function() {
   // Register Globals
   this.locals({
     moment: require('moment'),
+    twix: require('twix'),
     accounting: require('accounting')
   });
 

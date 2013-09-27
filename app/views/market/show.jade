@@ -26,10 +26,6 @@ block content
             span.input-group-addon %
 
         .form-group
-          label(for='quantity') Material Quantity
-          input#quantity.form-control(name='quantity', type='text', placeholder='100000')
-
-        .form-group
           label(for='start') Start Date
           .input-group
             input#start.form-control(name='start', type='text', placeholder='Start Date', data-date-format='mm-dd-yyyy', value=moment().subtract('month', 1).format("MM-DD-YYYY"))
