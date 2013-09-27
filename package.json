@@ -35,6 +35,7 @@
     "moment": "2.1.x",
     "mongoose": "3.6.x",
     "mongoose-types": "1.0.x",
+    "newrelic": "0.11.2",
     "node-rest-client": "0.7.x",
     "nodetime": "0.8.x",
     "passport": "0.1.x",

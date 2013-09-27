@@ -1,4 +1,5 @@
-var express = require('express')
+var newrelic = require('newrelic')
+  , express = require('express')
   , mongoose = require('mongoose')
   , mongo_store = require('connect-mongostore')(express)
   , passport = require('passport')
