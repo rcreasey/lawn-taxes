@@ -1,0 +1,15 @@
+form#operations.form-horizontal(action='/operations', method='POST')
+
+  #production-lines
+    h4 
+      | Production Lines 
+      button#add-production-line.btn.btn-success.btn-xs(type='button') &plus;
+
+  :coffeescript
+      $('#add-production-line').click -> 
+        $.get('/operations/new.js', (result) ->
+         $('#production-lines').append(result);
+        )
+
+  button.btn.btn-primary(type='submit') Create Operation
+

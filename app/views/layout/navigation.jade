@@ -5,11 +5,13 @@
         span.icon-bar
         span.icon-bar
         span.icon-bar
-      a.navbar-brand(href='#') LAWN Moon Taxes
+      a.navbar-brand(href='/') LAWN Moon Taxes
     .navbar-collapse.collapse
       ul.nav.navbar-nav
         li(class=title.match(/^Market/g)?'active':undefined)
-          a(href='/') Market
+          a(href='/market') Market
+        li(class=title.match(/^Operations.*/g)?'active':undefined)
+          a(href='/operations') Operations
       ul.nav.navbar-nav.navbar-right
         li
           if user

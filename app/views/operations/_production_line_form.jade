@@ -1,0 +1,24 @@
+.production-line
+  button.pull-right.btn.btn-danger(type='button', onclick='$(this).parent().remove();') &times;
+
+  .form-group
+    label.col-lg-2(for='material') Moon Material
+    .input-group.col-lg-9
+      select.form-control(name="materials[]")
+        option(value=false) Select Material
+        for item in items
+          option(value="#{item._id}", data-typeID="#{item.typeID}")= item.typeName
+
+  .form-group
+    label.col-lg-2(for='start') Start Date
+    .input-group.col-lg-10
+      span.input-group-addon
+        span.glyphicon.glyphicon-calendar
+      input.form-control(name='start[]', type='text', placeholder='Start Date', data-date-format='mm-dd-yyyy', value=moment().subtract('month', 1).format("MM-DD-YYYY"))
+
+  .form-group
+    label.col-lg-2(for='end') End Date
+    .input-group.col-lg-10
+      span.input-group-addon
+        span.glyphicon.glyphicon-calendar
+      input.form-control(name='end[]', type='text', placeholder='End Date', data-date-format='mm-dd-yyyy', value=moment().format("MM-DD-YYYY"))

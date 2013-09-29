@@ -22,6 +22,7 @@
     "connect-mongostore": "0.0.9",
     "coffee-script": "1.6.x",
     "connect-powered-by": "0.1.x",
+    "crypto": "0.0.3",
     "express": "3.x.x",
     "grunt": "0.4.x",
     "grunt-cli": "0.1.x",

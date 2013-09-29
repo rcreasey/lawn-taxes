@@ -1,0 +1,16 @@
+extends ../layout/default
+
+block content
+  .row
+    .col-md-8.col-md-offset-2
+
+      h3 Operations
+
+      a.btn.btn-primary.btn-sm(href='/operations/new') Create Operation
+
+      table.table.table-striped.table-condensed
+        tbody
+          each operation in operations
+            tr
+              td
+                a(href='/operations/#{operation.operationID}')= operation.operationID
