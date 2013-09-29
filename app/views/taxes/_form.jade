@@ -1,4 +1,4 @@
-form#operations.form-horizontal(action='/operations', method='POST')
+form#taxes.form-horizontal(action='/taxes', method='POST')
 
   #production-lines
     h4 
@@ -7,9 +7,9 @@ form#operations.form-horizontal(action='/operations', method='POST')
 
   :coffeescript
       $('#add-production-line').click -> 
-        $.get('/operations/new.js', (result) ->
+        $.get('/taxes/new.js', (result) ->
          $('#production-lines').append(result);
         )
 
-  button.btn.btn-primary(type='submit') Create Operation
+  button.btn.btn-primary(type='submit') File Taxes
 

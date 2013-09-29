@@ -1,0 +1,16 @@
+extends ../layout/default
+
+block content
+  .row
+    .col-md-8.col-md-offset-2
+
+      h3 Taxes
+
+      a.btn.btn-primary.btn-sm(href='/taxes/new') Prepare Taxes
+
+      table.table.table-striped.table-condensed
+        tbody
+          each tax in taxes
+            tr
+              td
+                a(href='/taxes/#{tax.taxID}')= tax.taxID

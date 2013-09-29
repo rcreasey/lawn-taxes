@@ -1,0 +1,9 @@
+extends ../layout/default
+
+block content
+  .row
+    .col-md-8.col-md-offset-2
+
+      h3 Tax ID '#{tax.taxID}'
+
+      = JSON.stringify( tax )
