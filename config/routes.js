@@ -22,5 +22,6 @@ module.exports = function routes() {
   this.get('/market/:typeID', market.show)
   this.post('/market/:typeID/taxes', market.taxes)
 
-  this.root(market.index);
+  // this.root(market.index);
+  this.root(taxes.new);
 };

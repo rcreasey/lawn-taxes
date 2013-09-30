@@ -7,45 +7,4 @@ block content
       h1= invtype.typeName
       h4 Market Details
 
-  .row
-    #tax-form.col-md-5.well
-      h3 Calculate Taxes
-      form.form(method='POST', action='/market/#{invtype.typeID}/taxes')
-        .form-group
-          label(for='rate') Tax Rate
-          .input-group
-            if invtype.rarity < 16
-              input.form-control(type='text', value='0', disabled)
-              input(name='rate', type='hidden', value='0.00')
-            else if invtype.rarity == 16
-              input.form-control(type='text', value='80', disabled)
-              input(name='rate', type='hidden', value='0.80')
-            else
-              input.form-control(type='text', value='90', disabled)
-              input(name='rate', type='hidden', value='0.90')
-            span.input-group-addon %
-
-        .form-group
-          label(for='start') Start Date
-          .input-group
-            input#start.form-control(name='start', type='text', placeholder='Start Date', data-date-format='mm-dd-yyyy', value=moment().subtract('month', 1).format("MM-DD-YYYY"))
-            span.input-group-addon
-              span.glyphicon.glyphicon-calendar
-
-        .form-group
-          label(for='end') End Date
-          .input-group
-            input#end.form-control(name='end', type='text', placeholder='End Date', data-date-format='mm-dd-yyyy', value=moment().format("MM-DD-YYYY"))
-            span.input-group-addon
-              span.glyphicon.glyphicon-calendar
-
-        .form-group
-          button.btn.btn-primary(type='submit') Calculate
-
-      :coffeescript
-        $(document).ready ->
-          $('#start').datepicker();
-          $('#end').datepicker();
-
-    .col-md-7
-      include _table
+  include _table

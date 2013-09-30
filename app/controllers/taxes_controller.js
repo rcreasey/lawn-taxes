@@ -10,20 +10,73 @@ var async = require('async')
   , Tax = require('../models/tax')
   , ProductionLine = require('../models/productionLine')
   , InvType = require('../models/invType')
+  , MarketDatum = require('../models/marketDatum')
 
 TaxesController.index = function(req, res) {
-  Tax.find({}).exec(function(err, taxes) {
-    res.render('taxes/index', { title: 'Taxes', user: req.user, taxes: taxes });
-  });
+  // Tax.find({}).exec(function(err, taxes) {
+  //   res.render('taxes/index', { title: 'Taxes', user: req.user, taxes: taxes });
+  // });
+  res.render('taxes/new', { title: 'Taxes :: Prepare Tax', user: req.user, tax: new Tax(), error: null });
 };
 
 TaxesController.show = function(req, res) {
   var taxID = req.param('taxID') || false;
   if (!taxID) res.redirect('/')
 
-  Tax.findOne({taxID: taxID}).populate('productionLines').exec(function(err, tax) {
+  async.waterfall([
+    function(callback) {
+      Tax.findOne({taxID: taxID}).exec(callback);    
+    },
+    function(tax, callback) {
+      async.forEach(tax.productionLines, function(production_line_id, callback) {
+        ProductionLine.findById( production_line_id ).populate('invType').exec(function(err, production_line) {
+
+          async.waterfall([
+            function(callback){
+              MarketDatum.aggregate(
+                  { $match: { invType: production_line.invType._id, date: {$gte: production_line.start, $lte: production_line.end} }}
+                , { $project: { 
+                        _id: {
+                            year : { $year : "$date" }
+                          , month : { $month : "$date" }
+                          , day : { $dayOfMonth : "$date" }
+                        }
+                      , invType: 1
+                      , min: 1
+                      , max: 1
+                      , average: 1
+                  }}
+                , { $group: { _id: '$invType', value: {$avg: "$average"} }}
+                , function(err, results) {
+                  if (err) callback(err);
+                  callback(err, results[0].value);
+                }
+              );
+            }, function(price, callback) {
+              var s = moment(production_line.start);
+              var e = moment(production_line.end);
+              var range = s.twix(e);
+              var per_day = 2400;
+              var quantity = per_day * range.count('days');
+
+              callback(null, {price: price, per_day: per_day, quantity: quantity, rate: production_line.rate, start: production_line.start, end: production_line.end, range: range});
+            }
+          ], function(err, taxes) {
+            if (err) callback(err);
+            production_line.taxes = taxes;
+            tax.productionLines[ _.indexOf(tax.productionLines, production_line_id) ] = production_line
+            callback();
+          });
+        })
+
+      }, function(err) {
+        callback(err, tax);
+      })
+    }
+  ], function(err, tax) {
     res.render('taxes/show', { title: 'Taxes :: Details', user: req.user, tax: tax });
   });
+
 };
 
 TaxesController.new = function(req, res) {
@@ -37,7 +90,7 @@ TaxesController.new = function(req, res) {
       break;
     case 'html':
     default:
-      res.render('taxes/new', { title: 'Taxes :: Prepare Tax', user: req.user, tax: tax });
+      res.render('taxes/new', { title: 'Taxes :: Prepare Tax', user: req.user, tax: tax, error: null });
   }
 
 };
@@ -56,8 +109,9 @@ TaxesController.create = function(req, res) {
   var tax = new Tax();
   var production_lines = new Array();
 
-  async.forEach(req.body.materials, function(id, callback) {
+  var materials = req.body.materials || new Array();
 
+  async.forEach(materials, function(id, callback) {
     async.waterfall([
       function(callback) {
         InvType.findOne({_id: id}, callback)
@@ -71,7 +125,7 @@ TaxesController.create = function(req, res) {
           , start: req.body.start[index]
           , end: req.body.end[index]
         }, function (err, production_line) {
-          if (err) throw err;
+          if (err) callback(err);
           production_lines.push( production_line )
           callback();
         });
@@ -82,13 +136,22 @@ TaxesController.create = function(req, res) {
     });
 
   }, function(err) {
-    shasum.update( moment().unix() + JSON.stringify( req.body ) )
-    tax.taxID = shasum.digest('hex')
+    if (err || production_lines.length == 0) 
+      return res.render('taxes/new', { title: 'Taxes :: Prepare Tax', user: req.user, tax: new Tax(), error: 'There was a problem with your tax return.  Please try again.'});
 
-    tax.productionLines = production_lines;
-    tax.save(function(err) {
-      res.redirect('taxes/' + tax.taxID)
-    });
+    try {
+      shasum.update( moment().unix() + JSON.stringify( req.body ) )
+      tax.taxID = shasum.digest('hex')
+      tax.productionLines = production_lines;
+      tax.save(function(err) {
+        if (err)
+          return res.render('taxes/new', { title: 'Taxes :: Prepare Tax', user: req.user, tax: new Tax(), error: 'There was a problem with your tax return.  Please try again.'});
+
+        return res.redirect('taxes/' + tax.taxID)
+      });
+    } catch (e) {
+      return res.render('taxes/new', { title: 'Taxes :: Prepare Tax', user: req.user, tax: new Tax(), error: 'There was a problem with your tax return.  Please try again.'});
+    }
   });
 
 };

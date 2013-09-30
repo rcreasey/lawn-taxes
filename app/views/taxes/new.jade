@@ -6,6 +6,17 @@ block content
 
       h3 Prepare Taxes
 
-      a.btn.btn-info.btn-sm(href='/taxes') &laquo; Taxes
+      .alert.alert-info
+        p To prepare your moon mining taxes, fill out the following form. 
+        p We'll calculate what you owe given how long you're mining something for and it's average Jita cost.
+        p 
+          | Click the 
+          strong &plus; 
+          | to add a new production line.
+
+      - if (error)
+        .alert.alert-danger
+          strong Crap!
+          = error
 
       include _form

@@ -14,24 +14,34 @@ body {
 }
 
 .production-line {
-  border-bottom: dashed 1px #999;
+  border-top: dashed 1px #999;
   margin: .5em 0;
   padding: .5em 0;
 }
+
+.production-line:first-child {
+  border-top: 0;
+}
+
 // market data table ///////////////////////
-div#taxes h3,
-div#tax-form h3 {
+div.taxes h3 {
   margin-top: 0;
   margin-bottom: 5px;
 }
 
-div#taxes dd {
+div.taxes dd {
     text-align: right;
 }
 
-div#taxes dl dd.subtotal {
+div.taxes dl dd.subtotal,
+div.taxes dl dd.total {
   border-top: solid 1px #aaa;
+  font-weight: bold;
   margin-bottom: 1em;
+}
+
+.alert h3 {
+  margin: 0;
 }
 
 table#market-data thead th,

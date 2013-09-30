@@ -15,7 +15,7 @@ var InvType = Schema({
 
 InvType.methods.market_data = function( callback ) {
   this.model('MarketDatum').find({ invType: this._id }).populate('typeID').sort('-date').exec(function(err, market_datums) {
-    if (err) throw err;
+    if (err) return false;
     return market_datums;
   });
 }

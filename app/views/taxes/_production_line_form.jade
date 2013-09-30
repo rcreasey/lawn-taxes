@@ -14,11 +14,11 @@
     .input-group.col-lg-10
       span.input-group-addon
         span.glyphicon.glyphicon-calendar
-      input.form-control(name='start[]', type='text', placeholder='Start Date', data-date-format='mm-dd-yyyy', value=moment().subtract('month', 1).format("MM-DD-YYYY"))
+      input.start.form-control(name='start[]', type='date', placeholder='Start Date', data-date-format='mm-dd-yyyy', value=moment().subtract('month', 1).format("MM-DD-YYYY"))
 
   .form-group
     label.col-lg-2(for='end') End Date
     .input-group.col-lg-10
       span.input-group-addon
         span.glyphicon.glyphicon-calendar
-      input.form-control(name='end[]', type='text', placeholder='End Date', data-date-format='mm-dd-yyyy', value=moment().format("MM-DD-YYYY"))
+      input.end.form-control(name='end[]', type='date', placeholder='End Date', data-date-format='mm-dd-yyyy', value=moment().format("MM-DD-YYYY"))
