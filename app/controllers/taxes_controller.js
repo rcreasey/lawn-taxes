@@ -78,7 +78,11 @@ TaxesController.show = function(req, res) {
       })
     }
   ], function(err, tax) {
-    res.render('taxes/show', { title: 'Taxes :: Details', user: req.user, tax: tax });
+    if (!tax) {
+      res.status(404).render('errors/404', {title: "Error :: 404", user: req.user, message: "Tax ID not found"})
+    } else {
+      res.render('taxes/show', { title: 'Taxes :: Details', user: req.user, tax: tax });
+    }
   });
 
 };
