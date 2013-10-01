@@ -1,5 +1,4 @@
-var newrelic = require('newrelic')
-  , express = require('express')
+var express = require('express')
   , mongoose = require('mongoose')
   , mongo_store = require('connect-mongostore')(express)
   , passport = require('passport')
@@ -7,6 +6,7 @@ var newrelic = require('newrelic')
   , util = require('util')
   , flash = require('connect-flash')
   , moment = require('moment')
+  , newrelic = require('newrelic')
 
 module.exports = function() {
   // Warn of version mismatch between global "lcm" binary and local installation

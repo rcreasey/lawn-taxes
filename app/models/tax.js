@@ -3,7 +3,6 @@ var mongoose = require('mongoose')
   , ProductionLine = require('./productionLine')
 
 var Tax = Schema({
-  taxID: {type: String, unique: true, index: true},  
   productionLines: [{type: Schema.Types.ObjectId, index: true, ref: 'ProductionLine'}],
 });
 

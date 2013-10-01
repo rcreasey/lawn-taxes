@@ -1,6 +1,6 @@
-if(process.env.NODETIME_ACCOUNT_KEY) {
-  require('nodetime').profile({accountKey: process.env.NODETIME_ACCOUNT_KEY, appName: 'Lawn Moon Taxes'});
-}
+// if(process.env.NODETIME_ACCOUNT_KEY) {
+//   require('nodetime').profile({accountKey: process.env.NODETIME_ACCOUNT_KEY, appName: 'Lawn Moon Taxes'});
+// }
 
 module.exports = function() {
   // Any files in this directory will be `require()`'ed when the application

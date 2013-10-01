@@ -1,8 +1,7 @@
 var async = require('async')
   , locomotive = require('locomotive')
   , _ = require('underscore')
-  , crypto = require('crypto')
-  , shasum = crypto.createHash('sha1')
+  , bcrypt = require('bcrypt')
   , moment = require('moment')
   , twix = require('twix')
   , Controller = locomotive.Controller
@@ -20,14 +19,15 @@ TaxesController.index = function(req, res) {
 };
 
 TaxesController.show = function(req, res) {
-  var taxID = req.param('taxID') || false;
-  if (!taxID) res.redirect('/')
+  var id = req.param('id') || false;
+  if (!id) res.redirect('/')
 
   async.waterfall([
     function(callback) {
-      Tax.findOne({taxID: taxID}).exec(callback);    
+      Tax.findOne({_id: id}).populate('productionLines').exec(callback);    
     },
     function(tax, callback) {
+      if (tax === null) callback();
       async.forEach(tax.productionLines, function(production_line_id, callback) {
         ProductionLine.findById( production_line_id ).populate('invType').exec(function(err, production_line) {
 
@@ -48,8 +48,12 @@ TaxesController.show = function(req, res) {
                   }}
                 , { $group: { _id: '$invType', value: {$avg: "$average"} }}
                 , function(err, results) {
-                  if (err) callback(err);
-                  callback(err, results[0].value);
+                  if (err) throw err;
+                  if (results.length < 1) {
+                    callback(err, 0)
+                  } else {
+                    callback(err, results[0].value);
+                  }
                 }
               );
             }, function(price, callback) {
@@ -137,21 +141,15 @@ TaxesController.create = function(req, res) {
 
   }, function(err) {
     if (err || production_lines.length == 0) 
-      return res.render('taxes/new', { title: 'Taxes :: Prepare Tax', user: req.user, tax: new Tax(), error: 'There was a problem with your tax return.  Please try again.'});
+      return res.render('taxes/new', { title: 'Taxes :: Prepare Tax', user: req.user, tax: new Tax(), error: '1: There was a problem with your tax return.  Please try again.' + err});
 
-    try {
-      shasum.update( moment().unix() + JSON.stringify( req.body ) )
-      tax.taxID = shasum.digest('hex')
-      tax.productionLines = production_lines;
-      tax.save(function(err) {
-        if (err)
-          return res.render('taxes/new', { title: 'Taxes :: Prepare Tax', user: req.user, tax: new Tax(), error: 'There was a problem with your tax return.  Please try again.'});
+    tax.productionLines = production_lines;
+    tax.save(function(err) {
+      if (err)
+        return res.render('taxes/new', { title: 'Taxes :: Prepare Tax', user: req.user, tax: new Tax(), error: '2: There was a problem with your tax return.  Please try again. ' + err});
 
-        return res.redirect('taxes/' + tax.taxID)
-      });
-    } catch (e) {
-      return res.render('taxes/new', { title: 'Taxes :: Prepare Tax', user: req.user, tax: new Tax(), error: 'There was a problem with your tax return.  Please try again.'});
-    }
+      return res.redirect('taxes/' + tax._id)
+    });
   });
 
 };

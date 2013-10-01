@@ -15,7 +15,7 @@ module.exports = function routes() {
 
   this.get('/taxes/?', taxes.index)
   this.get('/taxes/new.:format?', taxes.new)
-  this.get('/taxes/:taxID/?', taxes.show)
+  this.get('/taxes/:id/?', taxes.show)
   this.post('/taxes/?', taxes.create)
 
   this.get('/market/?', market.index)
