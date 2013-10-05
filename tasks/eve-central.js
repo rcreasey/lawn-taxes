@@ -15,7 +15,7 @@ var InvType = require(root + '/app/models/invType')
 'use strict';
 
 module.exports = function(grunt) {
-  grunt.registerTask('goonmetrics.fetch', 'Updates market prices from Goonmetrics.', function() {
+  grunt.registerTask('eve-central.fetch', 'Updates market prices from Eve Central.', function() {
 
     mongoose.connect(process.env.MONGO_URL);
     var db = mongoose.connection;
@@ -25,7 +25,7 @@ module.exports = function(grunt) {
     grunt.log.write('-----> Fetching market prices\n');
 
     var callback = this.async();
-    var goonmetrics = new restClient();
+    var eve_central = new restClient();
 
     async.waterfall([
       function(callback) {
@@ -34,42 +34,40 @@ module.exports = function(grunt) {
       function(items, callback) {
         var item_types = _.map(items, function(item) { return item.typeID; });
         var regionID = '10000002';
-        var url = "http://goonmetrics.com/api/price_history/?region_id=" + regionID + "&type_id=" + String(item_types)
 
-        async.waterfall([
-          function(callback) {
-            goonmetrics.get(url, function(data, response) { callback(null, data); }); 
-          },
-          function(data, callback) {
-            xml(data, function(err, result) {
-              callback(null, result.goonmetrics.price_history[0].type);
-            })
-          }, function(types, callback) {
+        async.forEach(item_types, function(type_id, callback) {
+          var url = "http://api.eve-central.com/api/history/for/type/" + type_id + "/region/The%20Forge/bid/0"
+          async.waterfall([
+            function(callback) {
+              eve_central.get(url, function(data, response) { callback(null, data); }); 
+            },
+            function(data, callback) {
+              callback(null, JSON.parse(data).values);
+            }, function(values, callback) {
  
-            async.forEach(types, function(type, callback) {
-              var typeID = _.find(items, function(item) { return item.typeID == type.$.id });
-
-              async.forEach(type.history, function(item, callback) {
-                var date  = moment(item.$.date)._d
+              async.forEach(values, function(item, callback) {
+                var typeID = _.find(items, function(item) { return item.typeID == type_id });
+                var date  = moment(item.at)._d
                 var datum = {invType: typeID._id, regionID: parseInt(regionID), 
-                             date: date, movement: parseInt(item.$.movement), volume: parseInt(item.$.numOrders),
-                             min: parseFloat(item.$.minPrice), max: parseFloat(item.$.maxPrice), average: parseFloat(item.$.avgPrice)};
+                             date: date, volume: parseInt(item.volume),
+                             min: parseFloat(item.min), max: parseFloat(item.max), average: parseFloat(item.avg)};
 
                 MarketDatum.update({invType: typeID._id, regionID: regionID, date: date}, {$set: datum}, {upsert: true}, callback);
                 count += 1;
                 grunt.log.write('.');
+
               }, function(err) {
                 if (err) throw err;
                 callback();
-              })
+              });
+   
+            }
+          ], function() {
+            callback();
+          });
 
-            }, function(err) {
-              if (err) throw err;
-              callback();
-            });
- 
-          }
-        ], function() {
+        }, function(err) {
+          if (err) throw err;
           callback();
         });
 

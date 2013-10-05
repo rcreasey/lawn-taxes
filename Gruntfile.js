@@ -11,5 +11,5 @@ module.exports = function(grunt) {
   });
 
   grunt.loadTasks('tasks');
-  grunt.registerTask('default', ['update', 'cleanup']);
+  grunt.registerTask('default', ['goonmetrics.fetch', 'eve-central.fetch', 'cleanup']);
 };
